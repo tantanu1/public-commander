@@ -1,0 +1,138 @@
+# Builds a tag of the private source repo (tantanu1/commander) for Windows, Linux, macOS
+# and publishes the binaries + installers as a GitHub Release of THIS public repo.
+# Security: no pull_request triggers (secrets must never reach fork code). SOURCE_TOKEN is
+# only passed to the resolve step (env) and actions/checkout (with persist-credentials: false).
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Private repo tag to build, e.g. v0.0.4"
+        required: true
+        type: string
+  schedule:
+    - cron: "7,37 * * * *" # every 30 min: build the newest v* tag that has no release here yet
+permissions: {}
+concurrency: { group: release, cancel-in-progress: false }
+env:
+  SOURCE_REPO: tantanu1/commander
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    permissions: { contents: read }
+    outputs:
+      tag: ${{ steps.pick.outputs.tag }}
+    steps:
+      - id: pick
+        env:
+          SOURCE_TOKEN: ${{ secrets.SOURCE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SOURCE_TOKEN:-}" ]; then
+            echo "::error::Repo secret SOURCE_TOKEN is not set. See README.md (fine-grained PAT, Contents: read on $SOURCE_REPO)."
+            exit 1
+          fi
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            tag=$INPUT_TAG
+            if ! [[ $tag =~ ^v[0-9A-Za-z._-]+$ ]]; then echo "::error::Invalid tag '$tag' (expected v*)"; exit 1; fi
+            if ! GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/git/ref/tags/$tag" --silent; then
+              echo "::error::Tag $tag not found in $SOURCE_REPO (or SOURCE_TOKEN lacks access)"; exit 1
+            fi
+          else
+            tags=$(GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/tags?per_page=100" --jq '.[].name') || {
+              echo "::error::Cannot list tags of $SOURCE_REPO: SOURCE_TOKEN invalid, expired or lacks access"; exit 1; }
+            tag=$(grep -E '^v[0-9A-Za-z._-]+$' <<<"$tags" | sort -V | tail -n1 || true)
+            if [ -z "$tag" ]; then echo "No v* tags in source repo; nothing to do."; tag=""
+            elif gh release view "$tag" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "Newest tag $tag already released; nothing to do."; tag=""
+            else echo "Building new tag $tag"; fi
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: resolve
+    if: needs.resolve.outputs.tag != ''
+    permissions: { contents: read }
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+          - { os: windows-latest, target: aarch64-pc-windows-msvc, nogate: true }
+          - { os: ubuntu-22.04,   target: x86_64-unknown-linux-gnu } # oldest glibc we support
+          - { os: macos-latest,   target: aarch64-apple-darwin }
+          - { os: macos-latest,   target: x86_64-apple-darwin, nogate: true }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ref: refs/tags/${{ needs.resolve.outputs.tag }}
+          token: ${{ secrets.SOURCE_TOKEN }}
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with: { targets: "${{ matrix.target }}", components: "clippy, rustfmt" }
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with: { key: "${{ matrix.target }}" }
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libgtk-3-dev libwayland-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - if: runner.os == 'Linux'
+        uses: taiki-e/install-action@fe3acb53a98b62c772db35de75ce0e4595e7ca8c # v2
+        with: { tool: "cargo-deb@3.8.0,cargo-generate-rpm@0.21.1" }
+      - if: ${{ !matrix.nogate }}
+        run: cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
+      - run: cargo build --release --target ${{ matrix.target }}
+      - name: package (binary + installer)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          t=${{ matrix.target }}; b=target/$t/release/commander; mkdir dist
+          v=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          case "$RUNNER_OS" in
+          Windows)
+            cp $b.exe dist/commander-$t.exe
+            dotnet tool install --global wix --version 5.0.2
+            [[ $t == aarch64* ]] && a=arm64 || a=x64
+            ~/.dotnet/tools/wix build packaging/windows/commander.wxs -arch $a -d Version=$v -d Exe=$b.exe -o dist/commander-$v-$t.msi
+            rm -f dist/*.wixpdb ;;
+          Linux)
+            cp $b dist/commander-$t
+            cargo deb -p commander --no-build --target $t -o dist/
+            cargo generate-rpm -p app --target $t -o dist/
+            curl -fsSLo linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage
+            echo "c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d  linuxdeploy" | sha256sum -c -
+            chmod +x linuxdeploy; cp assets/logo.svg commander.svg
+            APPIMAGE_EXTRACT_AND_RUN=1 ./linuxdeploy --appdir AppDir -e $b -d packaging/linux/commander.desktop -i commander.svg --output appimage
+            mv Commander*.AppImage dist/commander-$v-$t.AppImage ;;
+          macOS)
+            cp $b dist/commander-$t
+            c=dmg/Commander.app/Contents; mkdir -p $c/MacOS $c/Resources
+            cp $b $c/MacOS/; cp packaging/macos/commander.icns $c/Resources/
+            sed "s/@VERSION@/$v/" packaging/macos/Info.plist > $c/Info.plist
+            codesign --force --deep -s - dmg/Commander.app # ad-hoc only: not notarized
+            ln -s /Applications dmg/Applications
+            for i in 1 2 3; do # hdiutil is flaky on hosted runners
+              hdiutil create -volname Commander -srcfolder dmg -ov -format UDZO dist/commander-$v-$t.dmg && break
+              [ $i = 3 ] && exit 1; sleep 10
+            done ;;
+          esac
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with: { name: "commander-${{ matrix.target }}", path: dist/* }
+
+  release:
+    needs: [resolve, build]
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with: { path: dist, merge-multiple: true }
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          tag_name: ${{ needs.resolve.outputs.tag }}
+          name: Commander ${{ needs.resolve.outputs.tag }}
+          files: dist/*
+          body: |
+            Commander ${{ needs.resolve.outputs.tag }}: Windows (.exe, .msi), Linux (binary, .deb, .rpm, .AppImage), macOS (binary, .dmg).
+            macOS .dmg is ad-hoc signed, not notarized: right-click Commander.app > Open on first launch.
