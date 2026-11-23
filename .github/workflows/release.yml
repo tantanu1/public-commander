@@ -177,5 +177,5 @@ jobs:
           files: dist/*
           body: |
             Commander ${{ needs.resolve.outputs.tag }}: Windows (.exe, .msi), Linux (binary, .deb, .rpm, .AppImage), macOS (binary, .dmg).
-            The installers include the S3 and FTP/FTPS plugins. Plain binaries: unzip commander-plugins-<version>-<target>.zip into your plugins folder (guide: INSTALL-PLUGINS.md in the assets).
+            The installers include the S3, FTP/FTPS, SFTP and 7-Zip plugins (7-Zip uses your installed 7-Zip). Plain binaries: unzip commander-plugins-<version>-<target>.zip into your plugins folder (guide: INSTALL-PLUGINS.md in the assets).
             macOS .dmg is ad-hoc signed, not notarized: right-click Commander.app > Open on first launch.
