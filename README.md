@@ -25,6 +25,9 @@ Repo secrets are write-only: nobody (collaborators included) can read them back,
 in logs, and they are not passed to workflows triggered from forks. When the token expires, runs
 fail with a clear error; repeat the steps above.
 
-Notes: build logs are public (they show source file paths and compiler output). Scheduled
+Notes: build logs are public (they show source file paths and compiler output). Uploaded artifacts
+hold only the built binaries/installers and expire after 1 day; no Actions cache is used, since
+fork-PR workflows could restore it. Manual runs can set `dry_run` to build a branch (e.g. `main`)
+without publishing. Tags without `packaging/` (v0.0.3 and older) ship binaries only. Scheduled
 workflows are auto-disabled by GitHub after 60 days without commits to this repo; re-enable in
 the Actions tab or run it manually.

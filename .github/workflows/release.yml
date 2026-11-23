@@ -10,10 +10,14 @@ on:
         description: "Private repo tag to build, e.g. v0.0.4"
         required: true
         type: string
+      dry_run:
+        description: "Build only, no release (tag may then also be a branch, e.g. main)"
+        type: boolean
+        default: false
   schedule:
     - cron: "7,37 * * * *" # every 30 min: build the newest v* tag that has no release here yet
 permissions: {}
-concurrency: { group: release, cancel-in-progress: false }
+concurrency: { group: "release-${{ github.event_name }}-${{ inputs.tag }}", cancel-in-progress: false }
 env:
   SOURCE_REPO: tantanu1/commander
 jobs:
@@ -22,23 +26,38 @@ jobs:
     permissions: { contents: read }
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
+      ref: ${{ steps.pick.outputs.ref }}
+      publish: ${{ steps.pick.outputs.publish }}
     steps:
       - id: pick
         env:
           SOURCE_TOKEN: ${{ secrets.SOURCE_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           INPUT_TAG: ${{ inputs.tag }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set -euo pipefail
           if [ -z "${SOURCE_TOKEN:-}" ]; then
             echo "::error::Repo secret SOURCE_TOKEN is not set. See README.md (fine-grained PAT, Contents: read on $SOURCE_REPO)."
             exit 1
           fi
+          publish=true
           if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
-            tag=$INPUT_TAG
-            if ! [[ $tag =~ ^v[0-9A-Za-z._-]+$ ]]; then echo "::error::Invalid tag '$tag' (expected v*)"; exit 1; fi
-            if ! GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/git/ref/tags/$tag" --silent; then
-              echo "::error::Tag $tag not found in $SOURCE_REPO (or SOURCE_TOKEN lacks access)"; exit 1
+            tag=$INPUT_TAG; ref=refs/tags/$tag
+            if [ "$DRY_RUN" = true ]; then
+              publish=false
+              if ! [[ $tag =~ ^[0-9A-Za-z._/-]+$ ]]; then echo "::error::Invalid ref '$tag'"; exit 1; fi
+              if ! GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/git/ref/tags/$tag" --silent 2>/dev/null; then
+                ref=refs/heads/$tag
+                if ! GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/git/ref/heads/$tag" --silent; then
+                  echo "::error::Ref $tag not found in $SOURCE_REPO (or SOURCE_TOKEN lacks access)"; exit 1
+                fi
+              fi
+            else
+              if ! [[ $tag =~ ^v[0-9A-Za-z._-]+$ ]]; then echo "::error::Invalid tag '$tag' (expected v*)"; exit 1; fi
+              if ! GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/git/ref/tags/$tag" --silent; then
+                echo "::error::Tag $tag not found in $SOURCE_REPO (or SOURCE_TOKEN lacks access)"; exit 1
+              fi
             fi
           else
             tags=$(GH_TOKEN=$SOURCE_TOKEN gh api "repos/$SOURCE_REPO/tags?per_page=100" --jq '.[].name') || {
@@ -48,8 +67,9 @@ jobs:
             elif gh release view "$tag" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
               echo "Newest tag $tag already released; nothing to do."; tag=""
             else echo "Building new tag $tag"; fi
+            ref=refs/tags/$tag
           fi
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          { echo "tag=$tag"; echo "ref=${ref:-}"; echo "publish=$publish"; } >> "$GITHUB_OUTPUT"
 
   build:
     needs: resolve
@@ -69,13 +89,13 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: ${{ env.SOURCE_REPO }}
-          ref: refs/tags/${{ needs.resolve.outputs.tag }}
+          ref: ${{ needs.resolve.outputs.ref }}
           token: ${{ secrets.SOURCE_TOKEN }}
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
         with: { targets: "${{ matrix.target }}", components: "clippy, rustfmt" }
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
-        with: { key: "${{ matrix.target }}" }
+      # No rust-cache on purpose: Actions caches of this public repo can be restored by
+      # workflows from fork PRs, and they would hold build output of the private source.
       - if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libgtk-3-dev libwayland-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
       - if: runner.os == 'Linux'
@@ -89,16 +109,20 @@ jobs:
         run: |
           set -euxo pipefail
           t=${{ matrix.target }}; b=target/$t/release/commander; mkdir dist
+          # Tags older than the packaging files (e.g. v0.0.3) ship binaries only.
+          skip() { echo "::warning::$1 missing in this source ref: skipping $2"; }
           v=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
           case "$RUNNER_OS" in
           Windows)
             cp $b.exe dist/commander-$t.exe
+            if [ ! -f packaging/windows/commander.wxs ]; then skip packaging/windows/commander.wxs .msi; exit 0; fi
             dotnet tool install --global wix --version 5.0.2
             [[ $t == aarch64* ]] && a=arm64 || a=x64
             ~/.dotnet/tools/wix build packaging/windows/commander.wxs -arch $a -d Version=$v -d Exe=$b.exe -o dist/commander-$v-$t.msi
             rm -f dist/*.wixpdb ;;
           Linux)
             cp $b dist/commander-$t
+            if [ ! -f packaging/linux/commander.desktop ]; then skip packaging/linux .deb/.rpm/.AppImage; exit 0; fi
             cargo deb -p commander --no-build --target $t -o dist/
             cargo generate-rpm -p app --target $t -o dist/
             curl -fsSLo linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage
@@ -108,6 +132,7 @@ jobs:
             mv Commander*.AppImage dist/commander-$v-$t.AppImage ;;
           macOS)
             cp $b dist/commander-$t
+            if [ ! -f packaging/macos/Info.plist ]; then skip packaging/macos .dmg; exit 0; fi
             c=dmg/Commander.app/Contents; mkdir -p $c/MacOS $c/Resources
             cp $b $c/MacOS/; cp packaging/macos/commander.icns $c/Resources/
             sed "s/@VERSION@/$v/" packaging/macos/Info.plist > $c/Info.plist
@@ -119,10 +144,15 @@ jobs:
             done ;;
           esac
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with: { name: "commander-${{ matrix.target }}", path: dist/* }
+        with:
+          name: "commander-${{ matrix.target }}"
+          path: dist/* # only built binaries/installers: never source, target/ or Cargo files
+          if-no-files-found: error
+          retention-days: 1
 
   release:
     needs: [resolve, build]
+    if: needs.resolve.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions: { contents: write }
     steps:
