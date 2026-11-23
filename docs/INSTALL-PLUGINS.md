@@ -10,6 +10,9 @@ The installers (`.msi`, `.deb`, `.rpm`, `.AppImage`, `.dmg`) contain **only the 
 separate download: `commander-plugins-<version>-<target>.zip` on the same release page. They exist
 from **v0.0.6** on; the plugin ABI must match the app, so use the zip of the same release.
 
+> **Upgrading from v0.0.6 or v0.0.7?** Those installers included the plugins; the new installer
+> removes them. Unzip the plugin zip into your user plugin folder (below) to get them back.
+
 ## How to use them
 
 | Plugin | How to open it |

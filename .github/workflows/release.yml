@@ -173,7 +173,7 @@ jobs:
           files: dist/*
           body: |
             Commander ${{ needs.resolve.outputs.tag }}: Windows (.exe, .msi), Linux (binary, .deb, .rpm, .AppImage), macOS (binary, .dmg).
-            The installers contain the app only. Plugins (S3, FTP/FTPS, SFTP, 7-Zip): download commander-plugins-<version>-<target>.zip and unzip it into your user plugin folder (%APPDATA%\commander\plugins on Windows, ~/.config/commander/plugins on Linux/macOS), then restart Commander. Guide: INSTALL-PLUGINS.md in the assets.
+            The installers contain the app only. Plugins (S3, FTP/FTPS, SFTP, 7-Zip): download commander-plugins-<version>-<target>.zip and unzip it into your user plugin folder (%APPDATA%\commander\plugins on Windows, ~/.config/commander/plugins on Linux/macOS), then restart Commander. Guide: INSTALL-PLUGINS.md in the assets. Upgrading from v0.0.6/v0.0.7: the installer removes the plugins it used to include, so unzip the plugin zip into your user plugin folder again.
 
             How to use plugins:
             - S3: type s3://bucket/path in the path bar.
