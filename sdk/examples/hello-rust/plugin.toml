@@ -1,0 +1,13 @@
+id = "hello-rust"
+name = "Hello (Rust example)"
+version = "0.1.0"
+abi = 1
+transport = "dylib"
+kinds = ["vfs"]
+threading = "serial"
+[entry]
+windows = "hello_rust.dll"
+linux = "libhello_rust.so"
+macos = "libhello_rust.dylib"
+[vfs]
+scheme = "hellors"

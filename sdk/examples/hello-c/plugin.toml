@@ -1,0 +1,13 @@
+id = "hello"
+name = "Hello (C example)"
+version = "0.1.0"
+abi = 1
+transport = "dylib"
+kinds = ["vfs"]
+threading = "serial"
+[entry]
+windows = "hello.dll"
+linux = "libhello.so"
+macos = "libhello.dylib"
+[vfs]
+scheme = "hello"
