@@ -26,7 +26,7 @@ drive and opens multi-gigabyte files instantly.
 ## Download
 
 Get it from the [Releases page](https://github.com/tantanu1/public-commander/releases/latest).
-The latest release is **v0.0.7**.
+The latest release is **v0.0.9**.
 
 | System | Installer | Plain binary |
 |---|---|---|
@@ -35,10 +35,9 @@ The latest release is **v0.0.7**.
 | macOS Apple Silicon / Intel | `.dmg` | `commander-*-apple-darwin` |
 
 The installers contain **only the app**. The **S3, FTP/FTPS, SFTP and 7-Zip plugins** are a separate
-download: unzip `commander-plugins-<version>-<target>.zip` (same release, same platform) into your
-plugin folder, `%APPDATA%\commander\plugins` on Windows or `~/.config/commander/plugins` on
-Linux/macOS, and restart ([how](docs/INSTALL-PLUGINS.md)). A future version will install a dropped
-plugin zip directly.
+download: **drag `commander-plugins-<version>-<target>.zip` onto a Commander panel** and press
+Install. No restart ([how](docs/INSTALL-PLUGINS.md)). The plugin zip must come from the **same
+release** as the app (v0.0.9 plugins need Commander v0.0.9 or newer).
 
 macOS: the `.dmg` is ad-hoc signed, not notarized. The first time, right-click `Commander.app` and
 choose **Open**.
@@ -104,6 +103,15 @@ the same keys as local ones.
 
 ![FTP / SFTP connect dialog](docs/screens/connect.png)
 
+### Clean Disk and open files
+
+**Files > Clean Disk** shows where the space went, WinDirStat-style, and **Files > Processes Using
+Selected Files** shows which programs hold a file open (with a safe End process).
+
+| Clean Disk | Processes Using Selected Files |
+|---|---|
+| ![Clean Disk: folders by size](docs/screens/clean-disk.png) | ![Processes holding a file open](docs/screens/processes.png) |
+
 ### Make it yours
 
 An Options dialog laid out like Total Commander's, dark and light themes, redefinable hotkeys
@@ -125,10 +133,21 @@ clipboard, the shell context menu (Windows) and auto-refresh on changes.
 
 - Native on Windows, Linux and macOS (x64 and ARM64 on Windows and macOS, x64 on Linux). Free and
   MIT-licensed.
-- S3 and S3-compatible storage (AWS, MinIO, Cloudflare R2, SeaweedFS) as a panel: `s3://bucket/path`.
+- S3 and S3-compatible storage (AWS, MinIO, Cloudflare R2, SeaweedFS) as a panel: the `s3` drive
+  lists your AWS profiles, then each profile's buckets (or type `s3://bucket/path`). SSO and
+  expired credentials show a "Log in" dialog with the exact `aws` command it will run, then Retry.
 - A cross-platform plugin API: write plugins in any language with a C ABI, one versioned interface
   for every OS. Manifests are read without loading any plugin code.
 - Undo the last file operation (Ctrl+Z).
+- Files > Processes Using Selected Files: which programs hold the selection open (PID, name,
+  executable, which items), with a confirmed End process. Windows, Linux and macOS.
+- Files > Clean Disk (like WinDirStat): folders sorted by size with bars and the largest files,
+  filled live while it scans; delete to the Recycle Bin without a rescan.
+- Checksums run in a compact window and can go to the background (F2): pause, cancel, and a
+  "done" notice that opens the results.
+- The row flashes when Enter or a double-click launches a file, so you see it opened.
+- Crash log: if Commander ever panics it writes `crash.log` (`%APPDATA%\commander\crash.log`,
+  `~/.config/commander/crash.log`); attach it to bug reports.
 - Markdown rendered in Lister (F3).
 - Archive-bomb guard when unpacking (size-ratio check and a confirmation; memory-capped decoders).
 - Passwords never land in paths, tabs or history: a typed `user:pass@` URL is masked everywhere,
@@ -160,12 +179,15 @@ The defaults follow Total Commander. Every key can be changed with Ctrl+Shift+K.
 
 Plugins add new places to browse. They show up as `scheme://` paths in the panels and work with
 the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get
-`commander-plugins-<version>-<target>.zip` from the release and unzip it into your plugin folder
-(`%APPDATA%\commander\plugins` on Windows, `~/.config/commander/plugins` on Linux/macOS).
+`commander-plugins-<version>-<target>.zip` from the release and **drag it onto a Commander panel**.
+It lists the plugins inside, you press Install, and they work at once (no restart). Uninstall in
+Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.9 plugins
+need v0.0.9 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
+`~/.config/commander/plugins` (Linux/macOS) still works.
 
 | Plugin | How to use | What it does |
 |---|---|---|
-| S3 | type `s3://bucket/path` in the path bar | Amazon S3 and S3-compatible servers, credentials like the AWS CLI |
+| S3 | the `s3` drive (Alt+F1 / Alt+F2) or `s3://` in the path bar | Amazon S3 and S3-compatible servers; AWS profiles, SSO login |
 | FTP / FTPS | Ctrl+F, bookmarks in `ftp.toml` | FTP and explicit TLS |
 | SFTP | Ctrl+F or `sftp://host/path`, bookmarks in `sftp.toml` | SSH file transfer, keys / ssh-agent, strict `known_hosts` checking |
 | 7-Zip | just open a `.rar` / `.iso` / encrypted archive | RAR, ISO, CAB, WIM, encrypted and multi-volume archives through your installed 7-Zip |

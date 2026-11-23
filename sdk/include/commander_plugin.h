@@ -50,6 +50,12 @@ extern "C" {
 #define CMDR_INTERNAL 8
 #define CMDR_AUTH 9      /* credentials missing/rejected */
 #define CMDR_NOT_EMPTY 10 /* remove_dir on a non-empty dir */
+#define CMDR_AUTH_EXPIRED 11 /* credentials expired / need a login (hosts before it: INTERNAL).
+                              * last_error: line 1 = message for the user, then optional lines
+                              * "login=<argv, tab-separated>" (the host runs it without a shell,
+                              * detached, when the user presses "Log in"; only allow-listed
+                              * programs, currently "aws") and "install=<hint>"
+                              * (shown when argv[0] is not on PATH). Never a secret. */
 
 /* cmdr_entry.kind */
 #define CMDR_FILE 0u

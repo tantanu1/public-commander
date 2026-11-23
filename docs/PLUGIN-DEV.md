@@ -110,7 +110,18 @@ scheme = "hello"             # mounts hello://...   ([a-z][a-z0-9+.-]+, at least
 # extensions = ["rar", "iso"]  # optional: open files with these extensions (archive plugins)
 ```
 
-Unknown keys are an error, so a typo is reported in **Options > Plugins** instead of being ignored.
+From **v0.0.9** unknown manifest keys (top level or in any section) are ignored and listed as a
+warning in **Options > Plugins**, so a typo is still visible. Older hosts (v0.0.8 and before) are
+strict and reject the whole manifest.
+
+Optional `[drive]` section: puts a drive chip in the drive bar and a row in Alt+F1 / Alt+F2.
+```toml
+[drive]
+label = "s3"       # chip text, 1-16 chars
+root = "s3://"     # where a click goes; must start with "<vfs.scheme>://"
+```
+A plugin that uses `[drive]` needs Commander v0.0.9 or newer.
+
 Keep your own settings in your own config file, not in the manifest. An `[entry]` path may point
 into a sibling folder: the bundled FTPS plugin is a manifest-only folder whose entry is
 `../ftp/commander_ftp.dll`, so one library serves two schemes.
@@ -162,9 +173,16 @@ writer).
 
 Return `CMDR_OK` (0) or a status: `CMDR_NOT_FOUND`, `CMDR_DENIED`, `CMDR_EXISTS`, `CMDR_IO`,
 `CMDR_CANCELLED`, `CMDR_UNSUPPORTED`, `CMDR_INVALID`, `CMDR_INTERNAL`, `CMDR_AUTH` (credentials
-missing or rejected), `CMDR_NOT_EMPTY`. Unknown values are treated as `CMDR_INTERNAL`. Put a
+missing or rejected), `CMDR_NOT_EMPTY`, `CMDR_AUTH_EXPIRED` (11, v0.0.9). Unknown values are
+treated as `CMDR_INTERNAL`, so hosts older than v0.0.9 show `CMDR_AUTH_EXPIRED` as a plain error. Put a
 human-readable reason where `last_error()` will find it, **per calling thread** (a thread-local
 variable). Never put secrets in error text.
+
+`CMDR_AUTH_EXPIRED` means credentials expired or need a login. `last_error()` holds line 1 = the
+message for the user, then optional lines `login=<argv, tab-separated>` and `install=<hint>`. The
+host then offers **Log in** and **Retry**: Log in runs the argv without a shell, detached, and
+shows the exact command first. The host only runs allow-listed programs, currently `aws`; any
+other program is refused with a message. `install=` is shown when `argv[0]` is not on PATH.
 
 ### Listing and stat
 
