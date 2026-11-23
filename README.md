@@ -5,6 +5,10 @@ This repo holds no source: its only job is CI. The workflow checks out a tag of 
 source repo, builds Windows / Linux / macOS binaries and installers, and publishes them under
 [Releases](../../releases).
 
+**Users:** download an installer from [Releases](../../releases); it already contains the S3 and
+FTP/FTPS plugins. Plain binaries: unzip `commander-plugins-<version>-<target>.zip` into your
+plugins folder; releases after v0.0.4 have the guide `INSTALL-PLUGINS.md` attached (paths per OS, S3/FTP setup).
+
 ## How releases are triggered
 
 - **Automatic:** every 30 min a scheduled run lists the source repo's tags and builds the newest
@@ -28,6 +32,8 @@ fail with a clear error; repeat the steps above.
 Notes: build logs are public (they show source file paths and compiler output). Uploaded artifacts
 hold only the built binaries/installers and expire after 1 day; no Actions cache is used, since
 fork-PR workflows could restore it. Manual runs can set `dry_run` to build a branch (e.g. `main`)
-without publishing. Tags without `packaging/` (v0.0.3 and older) ship binaries only. Scheduled
+without publishing. Tags without `packaging/` (v0.0.3 and older) ship binaries only; tags without
+`packaging/stage_plugins.sh` (v0.0.4 and older) ship no plugins (installers bundle them from then on,
+plus `commander-plugins-<version>-<target>.zip` and the user guide `INSTALL-PLUGINS.md`). Scheduled
 workflows are auto-disabled by GitHub after 60 days without commits to this repo; re-enable in
 the Actions tab or run it manually.
