@@ -34,9 +34,11 @@ The latest release is **v0.0.7**.
 | Linux x64 | `.deb`, `.rpm`, `.AppImage` | `commander-x86_64-unknown-linux-gnu` |
 | macOS Apple Silicon / Intel | `.dmg` | `commander-*-apple-darwin` |
 
-The installers come with the **S3, FTP/FTPS, SFTP and 7-Zip plugins** already included. With a
-plain binary, unzip `commander-plugins-<version>-<target>.zip` into your plugin folder
-([how](docs/INSTALL-PLUGINS.md)).
+The installers contain **only the app**. The **S3, FTP/FTPS, SFTP and 7-Zip plugins** are a separate
+download: unzip `commander-plugins-<version>-<target>.zip` (same release, same platform) into your
+plugin folder, `%APPDATA%\commander\plugins` on Windows or `~/.config/commander/plugins` on
+Linux/macOS, and restart ([how](docs/INSTALL-PLUGINS.md)). A future version will install a dropped
+plugin zip directly.
 
 macOS: the `.dmg` is ad-hoc signed, not notarized. The first time, right-click `Commander.app` and
 choose **Open**.
@@ -83,7 +85,7 @@ panel.
 ### Archives are just folders
 
 Enter a zip, 7z, tar or tar.gz/bz2/xz with Enter or Ctrl+PgDn and use it like a folder: view, copy
-out, copy in, delete. Alt+F5 packs, Alt+F9 unpacks. With the bundled 7-Zip plugin and 7-Zip
+out, copy in, delete. Alt+F5 packs, Alt+F9 unpacks. With the 7-Zip plugin and 7-Zip
 installed, RAR, ISO, CAB, WIM, multi-volume and password-protected archives work too.
 
 ![Browsing inside a zip file](docs/screens/archive.png)
@@ -157,14 +159,18 @@ The defaults follow Total Commander. Every key can be changed with Ctrl+Shift+K.
 ## Plugins
 
 Plugins add new places to browse. They show up as `scheme://` paths in the panels and work with
-the usual keys (F3, F5, F6, F7, F8).
+the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get
+`commander-plugins-<version>-<target>.zip` from the release and unzip it into your plugin folder
+(`%APPDATA%\commander\plugins` on Windows, `~/.config/commander/plugins` on Linux/macOS).
 
-| Plugin | Paths | What it does |
+| Plugin | How to use | What it does |
 |---|---|---|
-| S3 | `s3://bucket/folder` | Amazon S3 and S3-compatible servers, credentials like the AWS CLI |
-| FTP / FTPS | `ftp://`, `ftps://` | FTP and explicit TLS, bookmarks in `ftp.toml` |
-| SFTP | `sftp://` | SSH file transfer, keys / ssh-agent, strict `known_hosts` checking |
-| 7-Zip | archive files | RAR, ISO, CAB, WIM, encrypted and multi-volume archives through your 7-Zip |
+| S3 | type `s3://bucket/path` in the path bar | Amazon S3 and S3-compatible servers, credentials like the AWS CLI |
+| FTP / FTPS | Ctrl+F, bookmarks in `ftp.toml` | FTP and explicit TLS |
+| SFTP | Ctrl+F or `sftp://host/path`, bookmarks in `sftp.toml` | SSH file transfer, keys / ssh-agent, strict `known_hosts` checking |
+| 7-Zip | just open a `.rar` / `.iso` / encrypted archive | RAR, ISO, CAB, WIM, encrypted and multi-volume archives through your installed 7-Zip |
+
+Check what loaded in **Configuration > Options > Plugins**.
 
 ![Options > Plugins lists the plugin folders and every plugin found](docs/screens/plugins-options.png)
 

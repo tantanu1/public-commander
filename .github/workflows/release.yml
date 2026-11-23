@@ -1,5 +1,5 @@
 # Builds a tag of the private source repo (tantanu1/commander) for Windows, Linux, macOS
-# and publishes the binaries + installers (plugins bundled) + plugin zips as a GitHub Release of THIS public repo.
+# and publishes the binaries + installers (app only) + plugin zips as a GitHub Release of THIS public repo.
 # Security: no pull_request triggers (secrets must never reach fork code). SOURCE_TOKEN is
 # only passed to the resolve step (env) and actions/checkout (with persist-credentials: false).
 name: release
@@ -112,7 +112,7 @@ jobs:
           # Tags older than the packaging files (e.g. v0.0.3) ship binaries only.
           skip() { echo "::warning::$1 missing in this source ref: skipping $2"; }
           v=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
-          # Plugins (s3/ftp/ftps): staged once, bundled in every installer + zipped for manual installs.
+          # Plugins: never inside the installers; only a separate per-target zip (+ INSTALL-PLUGINS.md).
           p=plugins-dist
           if [ -f packaging/stage_plugins.sh ]; then
             bash packaging/stage_plugins.sh $t $p dist/commander-plugins-$v-$t.zip
@@ -123,8 +123,7 @@ jobs:
             if [ ! -f packaging/windows/commander.wxs ]; then skip packaging/windows/commander.wxs .msi; exit 0; fi
             dotnet tool install --global wix --version 5.0.2
             [[ $t == aarch64* ]] && a=arm64 || a=x64
-            w=(); if [ -n "$p" ]; then w=(-d "Plugins=$(cygpath -w "$PWD/$p")" -wx); fi # absolute dir; -wx: a miss fails
-            ~/.dotnet/tools/wix build packaging/windows/commander.wxs -arch $a -d Version=$v -d Exe=$b.exe "${w[@]}" -o dist/commander-$v-$t.msi
+            ~/.dotnet/tools/wix build packaging/windows/commander.wxs -arch $a -d Version=$v -d Exe=$b.exe -o dist/commander-$v-$t.msi
             rm -f dist/*.wixpdb ;;
           Linux)
             cp $b dist/commander-$t
@@ -136,16 +135,13 @@ jobs:
             curl -fsSLo linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage
             echo "c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d  linuxdeploy" | sha256sum -c -
             chmod +x linuxdeploy; cp assets/logo.svg commander.svg
-            if [ -n "$p" ]; then mkdir -p AppDir/usr/lib/commander; cp -r $p AppDir/usr/lib/commander/plugins; fi
             APPIMAGE_EXTRACT_AND_RUN=1 ./linuxdeploy --appdir AppDir -e $b -d packaging/linux/commander.desktop -i commander.svg --output appimage
-            find AppDir/usr/lib -path '*plugins*' || true
             mv Commander*.AppImage dist/commander-$v-$t.AppImage ;;
           macOS)
             cp $b dist/commander-$t
             if [ ! -f packaging/macos/Info.plist ]; then skip packaging/macos .dmg; exit 0; fi
             c=dmg/Commander.app/Contents; mkdir -p $c/MacOS $c/Resources
             cp $b $c/MacOS/; cp packaging/macos/commander.icns $c/Resources/
-            if [ -n "$p" ]; then cp -R $p $c/Resources/plugins; fi
             sed "s/@VERSION@/$v/" packaging/macos/Info.plist > $c/Info.plist
             codesign --force --deep -s - dmg/Commander.app # ad-hoc only: not notarized
             codesign --verify --deep --strict dmg/Commander.app; find dmg/Commander.app
@@ -177,5 +173,12 @@ jobs:
           files: dist/*
           body: |
             Commander ${{ needs.resolve.outputs.tag }}: Windows (.exe, .msi), Linux (binary, .deb, .rpm, .AppImage), macOS (binary, .dmg).
-            The installers include the S3, FTP/FTPS, SFTP and 7-Zip plugins (7-Zip uses your installed 7-Zip). Plain binaries: unzip commander-plugins-<version>-<target>.zip into your plugins folder (guide: INSTALL-PLUGINS.md in the assets).
+            The installers contain the app only. Plugins (S3, FTP/FTPS, SFTP, 7-Zip): download commander-plugins-<version>-<target>.zip and unzip it into your user plugin folder (%APPDATA%\commander\plugins on Windows, ~/.config/commander/plugins on Linux/macOS), then restart Commander. Guide: INSTALL-PLUGINS.md in the assets.
+
+            How to use plugins:
+            - S3: type s3://bucket/path in the path bar.
+            - FTP/FTPS/SFTP: Ctrl+F (connect), bookmarks in ftp.toml / sftp.toml.
+            - 7-Zip: just open .rar/.iso/encrypted archives (uses your installed 7-Zip).
+            - Check what loaded: Configuration > Options > Plugins.
+
             macOS .dmg is ad-hoc signed, not notarized: right-click Commander.app > Open on first launch.

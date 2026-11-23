@@ -1,48 +1,49 @@
 # Installing plugins (S3, FTP/FTPS, SFTP, 7-Zip)
 
-Commander ships with these plugins: **S3** (`s3://`, Amazon S3 and S3-compatible storage),
+Commander has these plugins: **S3** (`s3://`, Amazon S3 and S3-compatible storage),
 **FTP** (`ftp://`), **FTPS** (`ftps://`, explicit TLS), **SFTP** (`sftp://`) and **7-Zip**
 (`sevenzip`: RAR/ISO/CAB/... and encrypted archives; needs 7-Zip itself installed: 7-zip.org,
 or `7zz` / `7z` on PATH). Developer guide (writing your own):
 [PLUGIN-DEV.md](PLUGIN-DEV.md).
 
-Plugins ship with releases **starting with v0.0.6** (v0.0.5 and older have none). On an
-older version, install the newest release first (the plugin ABI must match the app, so use
-plugins from the same release).
+The installers (`.msi`, `.deb`, `.rpm`, `.AppImage`, `.dmg`) contain **only the app**. Plugins are a
+separate download: `commander-plugins-<version>-<target>.zip` on the same release page. They exist
+from **v0.0.6** on; the plugin ABI must match the app, so use the zip of the same release.
 
-## Installers: nothing to do
+## How to use them
 
-The installers already contain the plugins. Install Commander and they work:
-
-| Installer | Bundled plugins live in |
+| Plugin | How to open it |
 |---|---|
-| Windows `.msi` | `%LOCALAPPDATA%\Programs\Commander\plugins` |
-| Linux `.deb` / `.rpm` | `/usr/lib/commander/plugins` |
-| Linux `.AppImage` | inside the image |
-| macOS `.dmg` | `Commander.app/Contents/Resources/plugins` |
+| S3 | Type `s3://bucket/path` (or just `s3://` for the bucket list) in the path bar |
+| FTP / FTPS | **Ctrl+F** (Net > FTP Connect); bookmarks in `ftp.toml` |
+| SFTP | **Ctrl+F** or type `sftp://host/path`; bookmarks in `sftp.toml` |
+| 7-Zip | Just open a `.rar`, `.iso`, `.cab`, ... or encrypted archive (Enter); uses your installed 7-Zip |
 
-## Plain binary / portable: install the plugin zip
+**Configuration > Options > Plugins** shows which plugins loaded.
 
-Download `commander-plugins-<version>-<target>.zip` for **the same version and platform** as your
-Commander from [Releases](https://github.com/tantanu1/public-commander/releases) (target: e.g.
-`x86_64-pc-windows-msvc`, `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu`). Extract it into
-one of the plugin folders, so you get `plugins/s3/plugin.toml`, `plugins/ftp/...`,
-`plugins/ftps/...`, `plugins/sftp/...`, `plugins/sevenzip/...`, then restart Commander.
+## Install: unzip into your plugin folder
 
-Plugin folders, searched in this order (the first plugin with a given id wins):
+1. Download `commander-plugins-<version>-<target>.zip` for **the same version and platform** as
+   your Commander from [Releases](https://github.com/tantanu1/public-commander/releases) (target:
+   e.g. `x86_64-pc-windows-msvc`, `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu`).
+2. Unzip it into your user plugin folder, so you get `plugins/s3/plugin.toml`, `plugins/ftp/...`,
+   `plugins/ftps/...`, `plugins/sftp/...`, `plugins/sevenzip/...`:
+   - Windows: `%APPDATA%\commander\plugins` (`C:\Users\<you>\AppData\Roaming\commander\plugins`).
+     PowerShell: `Expand-Archive commander-plugins-*.zip "$env:APPDATA\commander\plugins" -Force`
+   - Linux / macOS: `~/.config/commander/plugins` (`$XDG_CONFIG_HOME/commander/plugins` if set).
+     `mkdir -p ~/.config/commander/plugins && unzip -o commander-plugins-*.zip -d ~/.config/commander/plugins`
+   - macOS may quarantine downloaded libraries: `xattr -dr com.apple.quarantine ~/.config/commander/plugins`
+3. Restart Commander.
 
-| | Your plugin folder (survives updates) | Next to the program |
-|---|---|---|
-| Windows | `%APPDATA%\commander\plugins` (`C:\Users\<you>\AppData\Roaming\commander\plugins`) | `<folder of commander.exe>\plugins` |
-| Linux | `~/.config/commander/plugins` (`$XDG_CONFIG_HOME/commander/plugins` if set) | `<folder of commander>/plugins`, then `<folder>/../lib/commander/plugins` |
-| macOS | `~/.config/commander/plugins` (`$XDG_CONFIG_HOME/commander/plugins` if set) | `<folder of commander>/plugins`, then `Commander.app/Contents/Resources/plugins` |
-
-Windows, PowerShell: `Expand-Archive commander-plugins-*.zip "$env:APPDATA\commander\plugins" -Force`.
-Linux/macOS: `mkdir -p ~/.config/commander/plugins && unzip -o commander-plugins-*.zip -d ~/.config/commander/plugins`.
-macOS may quarantine downloaded libraries: `xattr -dr com.apple.quarantine ~/.config/commander/plugins`.
+This folder survives app updates; after updating Commander, unzip the new release's plugin zip
+over it. A future version will install a dropped plugin zip directly.
 
 Each plugin is one folder holding `plugin.toml` + its library (`.dll` / `.so` / `.dylib`).
 `ftps` holds only a `plugin.toml`: it uses the library in `../ftp`, so keep both.
+
+Other folders searched after the user folder (the first plugin with a given id wins), e.g. for a
+portable setup: `<folder of the commander program>/plugins`; Linux also
+`<folder>/../lib/commander/plugins`; macOS also `Commander.app/Contents/Resources/plugins`.
 
 ## Check that a plugin loaded
 
