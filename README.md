@@ -26,7 +26,7 @@ drive and opens multi-gigabyte files instantly.
 ## Download
 
 Get it from the [Releases page](https://github.com/tantanu1/public-commander/releases/latest).
-The latest release is **v0.0.11**.
+The latest release is **v0.0.13**.
 
 | System | Installer | Plain binary |
 |---|---|---|
@@ -37,7 +37,7 @@ The latest release is **v0.0.11**.
 The installers contain **only the app**. The **S3, FTP/FTPS, SFTP and 7-Zip plugins** are a separate
 download: **drag `commander-plugins-<version>-<target>.zip` onto a Commander panel** and press
 Install. No restart ([how](docs/INSTALL-PLUGINS.md)). The plugin zip must come from the **same
-release** as the app (v0.0.11 plugins need Commander v0.0.11 or newer).
+release** as the app (v0.0.13 plugins need Commander v0.0.13 or newer).
 
 macOS: the `.dmg` is ad-hoc signed, not notarized. The first time, right-click `Commander.app` and
 choose **Open**.
@@ -51,7 +51,7 @@ bar and the full Total Commander menu. Copy and move run in the background with 
 overwrite dialog, verify and resume. F8 sends to the Recycle Bin / Trash; **Ctrl+Z undoes the last
 file operation**.
 
-Commander covers 179 of the 214 Total Commander features we track, and the list keeps growing.
+Commander covers 196 of the 214 Total Commander features we track, and the list keeps growing.
 
 ### Lister (F3): text, hex, images and Markdown
 
@@ -84,7 +84,7 @@ panel.
 ### Archives are just folders
 
 Enter a zip, 7z, tar or tar.gz/bz2/xz with Enter or Ctrl+PgDn and use it like a folder: view, copy
-out, copy in, delete. Alt+F5 packs (zip, 7z, tar, tar.gz, tar.bz2, tar.xz), Alt+F9 unpacks; pick the zip name encoding
+out, copy in, delete, and **edit a file in place with F4** (zip and tar: it is repacked when you save). Alt+F5 packs (zip, 7z, tar, tar.gz, tar.bz2, tar.xz), Alt+F9 unpacks; pick the zip name encoding
 (CP437, UTF-8, OEM) when a listing looks wrong. With the 7-Zip plugin and 7-Zip
 installed, RAR, ISO, CAB, WIM, multi-volume and password-protected archives work too.
 
@@ -112,11 +112,23 @@ paths longer than 260 characters work everywhere.
 
 ### Network: FTP, FTPS, SFTP and S3
 
-Ctrl+F opens the connect dialog with your bookmarks. Type `s3://bucket/folder` in the path bar for
+Ctrl+F opens the connect dialog with your bookmarks. FTP has a download list, abort, **resume** and an ASCII / binary transfer mode, plus a disconnect command. Type `s3://bucket/folder` in the path bar for
 Amazon S3 or any S3-compatible storage (MinIO, Cloudflare R2, SeaweedFS). Remote folders work with
 the same keys as local ones.
 
 ![FTP / SFTP connect dialog](docs/screens/connect.png)
+
+### Windows extras
+
+On Windows, the **NTFS permissions and owner** commands open the system Security pages, **Run as
+other user** and **Open With** use the system dialogs (Commander never sees your password), and
+the **Share** sheet is one key away.
+
+### Help and discoverability
+
+**F1** opens a searchable keyboard reference, the **command browser** lists every `cm_` command with
+its key (Enter runs it), and System info shows your OS, CPU, RAM and drives. **Check for updates**
+is opt-in: nothing is contacted unless you ask.
 
 ### Clean Disk and open files
 
@@ -131,7 +143,7 @@ Selected Files** shows which programs hold a file open (with a safe End process)
 
 An Options dialog laid out like Total Commander's (including a font page and a packer page), your
 own open / view / edit commands per file type, the window position remembered across monitors, dark and light themes, redefinable hotkeys
-(Ctrl+Shift+K), a configurable button bar and a Start menu for your own commands.
+(Ctrl+Shift+K), a configurable button bar (horizontal or **vertical**, with Total Commander `.BAR` import and keyboard focus), a Start menu for your own commands, and an optional **copy speed limit**.
 
 | Options | Light theme |
 |---|---|
@@ -201,8 +213,8 @@ Plugins add new places to browse. They show up as `scheme://` paths in the panel
 the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get
 `commander-plugins-<version>-<target>.zip` from the release and **drag it onto a Commander panel**.
 It lists the plugins inside, you press Install, and they work at once (no restart). Uninstall in
-Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.11 plugins
-need v0.0.11 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
+Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.13 plugins
+need v0.0.13 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
 `~/.config/commander/plugins` (Linux/macOS) still works.
 
 | Plugin | How to use | What it does |
