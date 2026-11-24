@@ -106,7 +106,7 @@ Just start typing: the cursor jumps to the first matching name.
 
 ### Recycle Bin and network (Windows)
 
-The Recycle Bin opens as a folder: list, restore and delete. Type `\server` to list its shares,
+The Recycle Bin opens as a folder: list, restore and delete. Type `\\server` to list its shares,
 map and disconnect network drives from the Net menu (credentials go through the OS prompt), and
 paths longer than 260 characters work everywhere.
 
