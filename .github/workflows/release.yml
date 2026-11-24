@@ -128,6 +128,7 @@ jobs:
           Linux)
             cp $b dist/commander-$t
             if [ -n "$p" ]; then cp docs/INSTALL-PLUGINS.md dist/; fi # user guide, attached to the release
+            for f in LICENSE.txt THIRD-PARTY-NOTICES.txt; do if [ -f $f ]; then cp $f dist/; fi; done # license + notices as assets (Linux job only: one copy)
             if [ ! -f packaging/linux/commander.desktop ]; then skip packaging/linux .deb/.rpm/.AppImage; exit 0; fi
             cargo deb -p commander --no-build --target $t -o dist/
             cargo generate-rpm -p app --target $t -o dist/
@@ -135,6 +136,7 @@ jobs:
             curl -fsSLo linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage
             echo "c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d  linuxdeploy" | sha256sum -c -
             chmod +x linuxdeploy; cp assets/logo.svg commander.svg
+            mkdir -p AppDir/usr/share/doc/commander; for f in LICENSE.txt THIRD-PARTY-NOTICES.txt; do if [ -f $f ]; then cp $f AppDir/usr/share/doc/commander/; fi; done
             APPIMAGE_EXTRACT_AND_RUN=1 ./linuxdeploy --appdir AppDir -e $b -d packaging/linux/commander.desktop -i commander.svg --output appimage
             mv Commander*.AppImage dist/commander-$v-$t.AppImage ;;
           macOS)
@@ -142,6 +144,7 @@ jobs:
             if [ ! -f packaging/macos/Info.plist ]; then skip packaging/macos .dmg; exit 0; fi
             c=dmg/Commander.app/Contents; mkdir -p $c/MacOS $c/Resources
             cp $b $c/MacOS/; cp packaging/macos/commander.icns $c/Resources/
+            for f in LICENSE.txt THIRD-PARTY-NOTICES.txt; do if [ -f $f ]; then cp $f $c/Resources/; fi; done
             sed "s/@VERSION@/$v/" packaging/macos/Info.plist > $c/Info.plist
             codesign --force --deep -s - dmg/Commander.app # ad-hoc only: not notarized
             codesign --verify --deep --strict dmg/Commander.app; find dmg/Commander.app

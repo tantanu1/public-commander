@@ -1,0 +1,16 @@
+id = "hello-python"
+name = "Hello (Python example)"
+version = "0.1.0"
+abi = 1
+transport = "stdio"
+kinds = ["vfs"]
+threading = "serial"        # one call at a time (plugin.py handles them in order anyway)
+[entry]
+# argv, run without a shell in this folder. `<os>_command` wins over `command` on that OS.
+command = ["python3", "plugin.py"]
+windows_command = ["py", "-3", "plugin.py"]
+[vfs]
+scheme = "hello"            # hello://<name>/path
+[drive]
+label = "hello"
+root = "hello://demo"

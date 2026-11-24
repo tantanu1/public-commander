@@ -7,6 +7,7 @@ Everything needed to build a Commander plugin. Guide: [docs/PLUGIN-DEV.md](../do
 | [include/commander_plugin.h](include/commander_plugin.h) | The plugin C ABI, version 1 (MIT). |
 | [examples/hello-c](examples/hello-c) | Read-only `hello://` plugin in C, its `plugin.toml`, and `test_host.c`, a small host that loads a plugin and checks it. |
 | [examples/hello-rust](examples/hello-rust) | Read-only `hellors://` plugin in Rust (no dependencies): `cargo build --release`. |
+| [examples/hello-python](examples/hello-python) | Read-write in-memory `hello://` plugin in Python 3.9+ (standard library only) over the stdio JSON-RPC transport; needs Commander v0.0.19 or newer. Public domain (CC0). |
 
 Build and test the C example:
 
