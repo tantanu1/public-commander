@@ -26,7 +26,7 @@ drive and opens multi-gigabyte files instantly.
 ## Download
 
 Get it from the [Releases page](https://github.com/tantanu1/public-commander/releases/latest).
-The latest release is **v0.0.9**.
+The latest release is **v0.0.11**.
 
 | System | Installer | Plain binary |
 |---|---|---|
@@ -37,7 +37,7 @@ The latest release is **v0.0.9**.
 The installers contain **only the app**. The **S3, FTP/FTPS, SFTP and 7-Zip plugins** are a separate
 download: **drag `commander-plugins-<version>-<target>.zip` onto a Commander panel** and press
 Install. No restart ([how](docs/INSTALL-PLUGINS.md)). The plugin zip must come from the **same
-release** as the app (v0.0.9 plugins need Commander v0.0.9 or newer).
+release** as the app (v0.0.11 plugins need Commander v0.0.11 or newer).
 
 macOS: the `.dmg` is ad-hoc signed, not notarized. The first time, right-click `Commander.app` and
 choose **Open**.
@@ -51,7 +51,7 @@ bar and the full Total Commander menu. Copy and move run in the background with 
 overwrite dialog, verify and resume. F8 sends to the Recycle Bin / Trash; **Ctrl+Z undoes the last
 file operation**.
 
-Commander covers 165 of the 214 Total Commander features we track, and the list keeps growing.
+Commander covers 179 of the 214 Total Commander features we track, and the list keeps growing.
 
 ### Lister (F3): text, hex, images and Markdown
 
@@ -84,16 +84,31 @@ panel.
 ### Archives are just folders
 
 Enter a zip, 7z, tar or tar.gz/bz2/xz with Enter or Ctrl+PgDn and use it like a folder: view, copy
-out, copy in, delete. Alt+F5 packs, Alt+F9 unpacks. With the 7-Zip plugin and 7-Zip
+out, copy in, delete. Alt+F5 packs (zip, 7z, tar, tar.gz, tar.bz2, tar.xz), Alt+F9 unpacks; pick the zip name encoding
+(CP437, UTF-8, OEM) when a listing looks wrong. With the 7-Zip plugin and 7-Zip
 installed, RAR, ISO, CAB, WIM, multi-volume and password-protected archives work too.
 
 ![Browsing inside a zip file](docs/screens/archive.png)
+
+### Columns, comments and trees
+
+Define your own column sets (name, extension, size, dates, attributes, comment, path) in Options
+and switch between them. The **comments view** reads and writes `descript.ion`; comments follow
+files through copy, move and rename. Open a **separate folder tree** beside either panel
+(Ctrl+Shift+F8 cycles), or a **separate quick view window** with Ctrl+Shift+Q that follows the
+cursor.
 
 ### Quick search
 
 Just start typing: the cursor jumps to the first matching name.
 
 ![Quick search jumping to a file as you type](docs/demos/quick-search.gif)
+
+### Recycle Bin and network (Windows)
+
+The Recycle Bin opens as a folder: list, restore and delete. Type `\server` to list its shares,
+map and disconnect network drives from the Net menu (credentials go through the OS prompt), and
+paths longer than 260 characters work everywhere.
 
 ### Network: FTP, FTPS, SFTP and S3
 
@@ -114,7 +129,8 @@ Selected Files** shows which programs hold a file open (with a safe End process)
 
 ### Make it yours
 
-An Options dialog laid out like Total Commander's, dark and light themes, redefinable hotkeys
+An Options dialog laid out like Total Commander's (including a font page and a packer page), your
+own open / view / edit commands per file type, the window position remembered across monitors, dark and light themes, redefinable hotkeys
 (Ctrl+Shift+K), a configurable button bar and a Start menu for your own commands.
 
 | Options | Light theme |
@@ -148,6 +164,10 @@ clipboard, the shell context menu (Windows) and auto-refresh on changes.
 - The row flashes when Enter or a double-click launches a file, so you see it opened.
 - Crash log: if Commander ever panics it writes `crash.log` (`%APPDATA%\commander\crash.log`,
   `~/.config/commander/crash.log`); attach it to bug reports.
+- F4 on a file in a plugin panel (S3, FTP, SFTP) edits the remote file and sends it back when you
+  save; Shift+F4 creates a new one. Plugin copies run in the background queue.
+- Panels leave a drive that disappears (USB stick, network share) instead of staying on it.
+- Paste a file path into a panel and it opens that folder with the cursor on the file.
 - Markdown rendered in Lister (F3).
 - Archive-bomb guard when unpacking (size-ratio check and a confirmation; memory-capped decoders).
 - Passwords never land in paths, tabs or history: a typed `user:pass@` URL is masked everywhere,
@@ -181,8 +201,8 @@ Plugins add new places to browse. They show up as `scheme://` paths in the panel
 the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get
 `commander-plugins-<version>-<target>.zip` from the release and **drag it onto a Commander panel**.
 It lists the plugins inside, you press Install, and they work at once (no restart). Uninstall in
-Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.9 plugins
-need v0.0.9 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
+Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.11 plugins
+need v0.0.11 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
 `~/.config/commander/plugins` (Linux/macOS) still works.
 
 | Plugin | How to use | What it does |
