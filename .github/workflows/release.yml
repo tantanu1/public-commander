@@ -1,5 +1,6 @@
 # Builds a tag of the private source repo (tantanu1/commander) for Windows, Linux, macOS
-# and publishes the binaries + installers (app only) + plugin zips as a GitHub Release of THIS public repo.
+# and publishes the binaries + installers (app only) as a GitHub Release of THIS public repo.
+# Plugins are released by github.com/tantanu1/commander-plugins (its own release workflow).
 # Security: no pull_request triggers (secrets must never reach fork code). SOURCE_TOKEN is
 # only passed to the resolve step (env) and actions/checkout (with persist-credentials: false).
 name: release
@@ -112,11 +113,7 @@ jobs:
           # Tags older than the packaging files (e.g. v0.0.3) ship binaries only.
           skip() { echo "::warning::$1 missing in this source ref: skipping $2"; }
           v=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
-          # Plugins: never inside the installers; only a separate per-target zip (+ INSTALL-PLUGINS.md).
-          p=plugins-dist
-          if [ -f packaging/stage_plugins.sh ]; then
-            bash packaging/stage_plugins.sh $t $p dist/commander-plugins-$v-$t.zip
-          else skip packaging/stage_plugins.sh plugins; p=; fi
+          # Plugins: never here (installers are app only); they are released by tantanu1/commander-plugins.
           case "$RUNNER_OS" in
           Windows)
             cp $b.exe dist/commander-$t.exe
@@ -127,7 +124,6 @@ jobs:
             rm -f dist/*.wixpdb ;;
           Linux)
             cp $b dist/commander-$t
-            if [ -n "$p" ]; then cp docs/INSTALL-PLUGINS.md dist/; fi # user guide, attached to the release
             for f in LICENSE.txt THIRD-PARTY-NOTICES.txt; do if [ -f $f ]; then cp $f dist/; fi; done # license + notices as assets (Linux job only: one copy)
             if [ ! -f packaging/linux/commander.desktop ]; then skip packaging/linux .deb/.rpm/.AppImage; exit 0; fi
             cargo deb -p commander --no-build --target $t -o dist/
@@ -176,7 +172,7 @@ jobs:
           files: dist/*
           body: |
             Commander ${{ needs.resolve.outputs.tag }}: Windows (.exe, .msi), Linux (binary, .deb, .rpm, .AppImage), macOS (binary, .dmg).
-            The installers contain the app only. Plugins (S3, FTP/FTPS, SFTP, SMB, 7-Zip, VMware VMs): download commander-plugins-<version>-<target>.zip and drag it onto a Commander panel, then confirm the install (no restart needed; from v0.0.9). Or unzip it into your user plugin folder (%APPDATA%\commander\plugins on Windows, ~/.config/commander/plugins on Linux/macOS) and restart, or use Configuration > Options > Plugins > Install plugin. Guide: INSTALL-PLUGINS.md in the assets. Use the plugin zip from the same release as the app: plugins from v0.0.9 need Commander v0.0.9 or newer. Upgrading from v0.0.6/v0.0.7: the installer removes the plugins it used to include, so install the plugin zip again.
+            The installers contain the app only. Plugins (S3, FTP/FTPS, SFTP, SMB, 7-Zip, VMware VMs) are open source and released separately: https://github.com/tantanu1/commander-plugins/releases (one zip per plugin, <id>-<plugin version>-<target>.zip, or commander-plugins-<version>-<target>.zip with all of them). Drag a zip onto a Commander panel and confirm the install (no restart needed), or use Configuration > Options > Plugins > Install from file / Browse registry, or unzip it into your user plugin folder (%APPDATA%\commander\plugins on Windows, ~/.config/commander/plugins on Linux/macOS) and restart. Guide: https://github.com/tantanu1/commander-plugins/blob/main/docs/INSTALL-PLUGINS.md. Use the plugin release with the same tag as the app (or older): plugins need a Commander at least as new as the one they were built with.
 
             How to use plugins:
             - S3: open the "s3" drive (drive bar / Alt+F1): AWS profiles from ~/.aws, then buckets. Expired/SSO credentials offer an `aws sso login`. s3://bucket/path in the path bar also works.

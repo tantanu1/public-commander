@@ -34,10 +34,12 @@ The latest release is **v0.0.13**.
 | Linux x64 | `.deb`, `.rpm`, `.AppImage` | `commander-x86_64-unknown-linux-gnu` |
 | macOS Apple Silicon / Intel | `.dmg` | `commander-*-apple-darwin` |
 
-The installers contain **only the app**. The **S3, FTP/FTPS, SFTP and 7-Zip plugins** are a separate
-download: **drag `commander-plugins-<version>-<target>.zip` onto a Commander panel** and press
-Install. No restart ([how](docs/INSTALL-PLUGINS.md)). The plugin zip must come from the **same
-release** as the app (v0.0.13 plugins need Commander v0.0.13 or newer).
+The installers contain **only the app**. The **plugins** (S3, FTP/FTPS, SFTP, SMB, 7-Zip, VMware
+VMs) are open source and a separate download from
+[commander-plugins releases](https://github.com/tantanu1/commander-plugins/releases): one zip per
+plugin, or `commander-plugins-<version>-<target>.zip` with all of them. **Drag a zip onto a
+Commander panel** and press Install. No restart ([how](docs/INSTALL-PLUGINS.md)). Use the plugin
+release with the **same version** as your Commander (or older).
 
 macOS: the `.dmg` is ad-hoc signed, not notarized. The first time, right-click `Commander.app` and
 choose **Open**.
@@ -210,11 +212,13 @@ The defaults follow Total Commander. Every key can be changed with Ctrl+Shift+K.
 ## Plugins
 
 Plugins add new places to browse. They show up as `scheme://` paths in the panels and work with
-the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get
-`commander-plugins-<version>-<target>.zip` from the release and **drag it onto a Commander panel**.
-It lists the plugins inside, you press Install, and they work at once (no restart). Uninstall in
-Options > Plugins. The zip must be from the **same release** as your Commander (v0.0.13 plugins
-need v0.0.13 or newer). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
+the usual keys (F3, F5, F6, F7, F8). They are not in the installers: get a plugin zip (one per
+plugin, or `commander-plugins-<version>-<target>.zip` with all) from the
+[commander-plugins releases](https://github.com/tantanu1/commander-plugins/releases) and **drag it
+onto a Commander panel**. It lists the plugins inside, you press Install, and they work at once
+(no restart). Uninstall in Options > Plugins. Use the plugin release with the **same version** as
+your Commander (or older). Source (MIT):
+[github.com/tantanu1/commander-plugins](https://github.com/tantanu1/commander-plugins). Unzipping into `%APPDATA%\commander\plugins` (Windows) or
 `~/.config/commander/plugins` (Linux/macOS) still works.
 
 | Plugin | How to use | What it does |
