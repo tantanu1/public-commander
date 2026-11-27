@@ -312,5 +312,5 @@ hello/
   plugins are reserved in the ABI (`viewer`, `columns`, `commands`) for later versions.
 - There is no way yet for a plugin to ask the user for a secret, except the archive password
   prompt described above.
-- Plugins are not sandboxed: they run with the user's rights, like Total Commander plugins. Only
+- Plugins are not sandboxed: they run with the user's rights, like plugins of other file managers. Only
   install plugins you trust.

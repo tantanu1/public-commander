@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 240" width="960" height="240" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
-  <title>Commander: the modern Total Commander alternative</title>
+  <title>Commander: the modern two-panel file manager</title>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0B1630"/><stop offset="1" stop-color="#1A3A80"/>
@@ -30,10 +30,10 @@
       <polyline class="arrow" points="52,48 74,68 52,88" fill="none" stroke="#F2B650" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
     <text x="220" y="96" class="t" font-size="52" font-weight="800">Commander</text>
-    <text x="222" y="130" class="d" font-size="20">Everything you love about Total Commander, rebuilt for today.</text>
+    <text x="222" y="130" class="d" font-size="20">The classic two-panel file manager, rebuilt for today.</text>
     <g font-size="24" font-weight="700" fill="#F2B650" transform="translate(222,178)">
       <text class="w" style="animation-delay:0s">🦀 Written in Rust. Memory-safe, rock solid.</text>
-      <text class="w" style="animation-delay:3s">⚡ Opens in 31 ms. About 15× faster than TC.</text>
+      <text class="w" style="animation-delay:3s">⚡ Opens in 31 ms. Never blocks on slow drives.</text>
       <text class="w" style="animation-delay:6s">🐧 Windows · Linux · macOS, all native.</text>
       <text class="w" style="animation-delay:9s">🧩 Plugins in any language: C, Rust, Go, Python…</text>
       <text class="w" style="animation-delay:12s">🛒 Plugin hub: browse and install in one click.</text>

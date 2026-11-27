@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/hero.svg" width="100%" alt="Commander: everything you love about Total Commander, rebuilt for today"></p>
+<p align="center"><img src="docs/hero.svg" width="100%" alt="Commander: the classic two-panel file manager, rebuilt for today"></p>
 
 <p align="center">
 <a href="https://github.com/tantanu1/public-commander/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/tantanu1/public-commander?style=for-the-badge&color=2563C8"></a>
@@ -10,7 +10,7 @@
 
 <h3 align="center">
 <a href="https://github.com/tantanu1/public-commander/releases/latest">⬇ Download free</a>
-&nbsp;·&nbsp; <a href="#why-switch-from-total-commander">Why switch</a>
+&nbsp;·&nbsp; <a href="#why-commander">Why switch</a>
 &nbsp;·&nbsp; <a href="#plugins">Plugins</a>
 &nbsp;·&nbsp; <a href="#features">Features</a>
 &nbsp;·&nbsp; <a href="docs/PLUGIN-DEV.md">Write a plugin</a>
@@ -24,10 +24,10 @@ It is free and has no nag screen. And when you hit F6 by mistake? **Ctrl+Z.**
 <p align="center"><img src="docs/demos/tour-v0.0.33.gif" width="100%" alt="Real recording of Commander v0.0.33: quick search, rendered Markdown in F3, thumbnails, quick view, multi-select and F5 copy, plugin drives and the plugin manager"></p>
 <p align="center"><sub>Real recording of Commander v0.0.33: quick search · Markdown in F3 · thumbnails · Ctrl+Q quick view · Ins + F5 · plugin drives · plugin manager</sub></p>
 
-## Why switch from Total Commander?
+## Why Commander?
 
-Total Commander is a legend. Commander keeps the keys and the workflow you know, and adds what
-Total Commander can't offer.
+Two-panel file managers have been the power user's tool for decades. Commander keeps the keys and
+the workflow you know, and brings them to every OS with a modern core.
 
 <table>
 <tr>
@@ -41,8 +41,7 @@ wrong you get a `crash.log`, not a dead window.
 <td width="50%" valign="top">
 
 ### ⚡ Faster
-**31 ms** from launch to window, against **459 ms** for TC 11.51: about **15× faster** on the
-same machine. Listings load in the background, so a 100,000-file folder never freezes the UI.
+**31 ms** from launch to a ready window, even on a 100,000-file folder. Listings load in the background, so a 100,000-file folder never freezes the UI.
 
 </td>
 </tr>
@@ -95,26 +94,21 @@ All official plugins are open source: [commander-plugins](https://github.com/tan
 | **SMB** | Network shares as panels. |
 | **7-Zip** | RAR, ISO, CAB, WIM, encrypted and multi-volume archives. |
 
-<p align="center"><img src="docs/speed.svg" width="100%" alt="Cold start to window: Commander 31 ms, Total Commander 459 ms"></p>
-
 ### Side by side
 
-| | Total Commander | **Commander** |
+| | Built-in file manager (Explorer / Finder) | **Commander** |
 |---|:---:|:---:|
-| Price | Shareware, paid license | **Free forever (MIT)** |
-| Nag screen | Until you pay | **Never** |
-| Language | Pascal / C | **Rust** |
-| Start to window | 459 ms | **31 ms** |
-| Windows / Linux / macOS | Windows only | **All three, native** |
-| Plugin API | Windows DLLs, per bitness | **One C ABI, any language, every OS** |
-| Plugin install | Unzip + restart | **Plugin hub or drag a zip. No restart.** |
-| S3 / VMware VMs as folders | ❌ | ✅ |
-| Undo last file operation | ❌ | ✅ Ctrl+Z |
-| TC keys, `cm_` commands, `.BAR` import | ✅ | ✅ |
+| Two panels, F-key workflow | ❌ | ✅ |
+| Price | Free | **Free (MIT)** |
+| Same app on Windows / Linux / macOS | ❌ | ✅ |
+| S3, SFTP, FTP, SMB, VMware VMs as folders | ❌ | ✅ |
+| Plugins in any language | ❌ | ✅ |
+| Undo last file operation | Partial | ✅ Ctrl+Z |
+| Built-in viewer: text, hex, images, Markdown | ❌ | ✅ F3 |
+| Find duplicates, sync folders, multi-rename | ❌ | ✅ |
 
-> Coming from TC? Your `.BAR` button bars import directly, the Options dialog is laid out the way
-> you remember, and every hotkey can be rebound (Ctrl+Shift+K). **196 of the 214** Total Commander
-> features we track already work.
+> Coming from a classic two-panel file manager? `.BAR` button bars import directly, the familiar
+> `cm_` command names and F-keys work out of the box, and every hotkey can be rebound (Ctrl+Shift+K).
 
 **Try it in 30 seconds:** grab the [latest release](https://github.com/tantanu1/public-commander/releases/latest),
 run it, press F5. That's the whole tutorial.
@@ -142,14 +136,14 @@ choose **Open**.
 
 ## Features
 
-### Two panels, the Total Commander way
+### Two panels, the classic way
 
 Full, brief and thumbnail views, folder tabs, drive buttons, breadcrumbs, a command line, a button
-bar and the full Total Commander menu. Copy and move run in the background with a queue, an
+bar and a full classic menu. Copy and move run in the background with a queue, an
 overwrite dialog, verify and resume. F8 sends to the Recycle Bin / Trash; **Ctrl+Z undoes the last
 file operation**.
 
-Commander covers 196 of the 214 Total Commander features we track, and the list keeps growing.
+The feature list keeps growing every release.
 
 ### Lister (F3): text, hex, images and Markdown
 
@@ -239,9 +233,9 @@ Selected Files** shows which programs hold a file open (with a safe End process)
 
 ### Make it yours
 
-An Options dialog laid out like Total Commander's (including a font page and a packer page), your
+A classic Options dialog (including a font page and a packer page), your
 own open / view / edit commands per file type, the window position remembered across monitors, dark and light themes, redefinable hotkeys
-(Ctrl+Shift+K), a configurable button bar (horizontal or **vertical**, with Total Commander `.BAR` import and keyboard focus), a Start menu for your own commands, and an optional **copy speed limit**.
+(Ctrl+Shift+K), a configurable button bar (horizontal or **vertical**, with `.BAR` import and keyboard focus), a Start menu for your own commands, and an optional **copy speed limit**.
 
 | Options | Light theme |
 |---|---|
@@ -255,7 +249,7 @@ Synchronize folders (Alt+Shift+S), compare folders (Shift+F2) and files by conte
 and junctions, drag and drop with Explorer / Finder, copy and paste of files through the OS
 clipboard, the shell context menu (Windows) and auto-refresh on changes.
 
-## Beyond Total Commander
+## More highlights
 
 - Native on Windows, Linux and macOS (x64 and ARM64 on Windows and macOS, x64 on Linux). Free and
   MIT-licensed.
@@ -286,7 +280,7 @@ clipboard, the shell context menu (Windows) and auto-refresh on changes.
 
 ## Keyboard
 
-The defaults follow Total Commander. Every key can be changed with Ctrl+Shift+K.
+The defaults follow the classic two-panel layout. Every key can be changed with Ctrl+Shift+K.
 
 | Key | Action | Key | Action |
 |---|---|---|---|
@@ -374,5 +368,5 @@ MIT.
 
 ---
 
-<p align="center"><b>Like it? ⭐ Star the repo</b> so other Total Commander users can find it.<br>
-Found a bug or missing a TC feature? <a href="https://github.com/tantanu1/public-commander/issues">Open an issue</a>.</p>
+<p align="center"><b>Like it? ⭐ Star the repo</b> so other power users can find it.<br>
+Found a bug or missing a feature? <a href="https://github.com/tantanu1/public-commander/issues">Open an issue</a>.</p>
