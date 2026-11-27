@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
+  <title>Commander: two panels, Total Commander keys, every OS</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1630"/>
+      <stop offset="1" stop-color="#16306B"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F2B650" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#F2B650" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#F2B650" stop-opacity="0"/>
+    </linearGradient>
+    <style>
+      .t{fill:#E8EEFA}.d{fill:#8FA6D6}.k{fill:#F2B650}
+      .row{fill:#E8EEFA;font-size:14px}
+      .fly{animation:fly 4s cubic-bezier(.6,0,.3,1) infinite}
+      .fly2{animation:fly 4s cubic-bezier(.6,0,.3,1) .25s infinite}
+      .fly3{animation:fly 4s cubic-bezier(.6,0,.3,1) .5s infinite}
+      @keyframes fly{0%,20%{transform:translate(0,0);opacity:1}55%{transform:translate(300px,0);opacity:1}62%,100%{transform:translate(300px,0);opacity:0}}
+      .land{opacity:0;animation:land 4s infinite}
+      .land2{opacity:0;animation:land 4s .25s infinite}
+      .land3{opacity:0;animation:land 4s .5s infinite}
+      @keyframes land{0%,55%{opacity:0}62%,92%{opacity:1}100%{opacity:0}}
+      .sel{animation:sel 4s infinite}
+      @keyframes sel{0%,8%{opacity:0}12%,60%{opacity:1}70%,100%{opacity:0}}
+      .key{animation:key 4s infinite;transform-origin:center;transform-box:fill-box}
+      @keyframes key{0%,16%{transform:scale(1)}20%{transform:scale(.88);fill:#F2B650}26%,100%{transform:scale(1)}}
+      .bar{animation:bar 4s infinite}
+      @keyframes bar{0%,20%{width:0}55%{width:300px}62%,100%{width:300px;opacity:0}}
+      .shine{animation:shine 6s linear infinite}
+      @keyframes shine{0%{transform:translateX(-400px)}100%{transform:translateX(1300px)}}
+      .pulse{animation:pulse 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+      @keyframes pulse{50%{transform:scale(1.06)}}
+    </style>
+    <clipPath id="clip"><rect width="960" height="360" rx="24"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="960" height="360" fill="url(#bg)"/>
+    <rect class="shine" x="0" y="0" width="160" height="360" fill="url(#glow)" opacity=".08" transform="skewX(-20)"/>
+
+    <!-- Title -->
+    <text x="40" y="70" class="t" font-size="44" font-weight="700">Commander</text>
+    <text x="40" y="104" class="d" font-size="18">Your Total Commander muscle memory.</text>
+    <text x="40" y="128" class="d" font-size="18">Free. Native. On every OS.</text>
+
+    <g transform="translate(40,160)" font-size="13" font-weight="600">
+      <rect class="pulse" width="74" height="28" rx="14" fill="#2563C8"/><text x="37" y="19" text-anchor="middle" class="t">Windows</text>
+      <rect class="pulse" x="84" width="58" height="28" rx="14" fill="#2563C8" style="animation-delay:.4s"/><text x="113" y="19" text-anchor="middle" class="t">Linux</text>
+      <rect class="pulse" x="152" width="66" height="28" rx="14" fill="#2563C8" style="animation-delay:.8s"/><text x="185" y="19" text-anchor="middle" class="t">macOS</text>
+    </g>
+    <g transform="translate(40,206)" font-size="15" class="d">
+      <text y="0">⚡ Starts in a blink, never blocks</text>
+      <text y="26">🦀 Written in Rust, MIT-licensed</text>
+      <text y="52">☁️ S3, SFTP, FTP, SMB as panels</text>
+      <text y="78">↩️ Ctrl+Z undoes file operations</text>
+    </g>
+
+    <!-- Window -->
+    <g transform="translate(330,40)">
+      <rect width="600" height="280" rx="14" fill="#0E1D40" stroke="#2A4486"/>
+      <circle cx="20" cy="18" r="5" fill="#E5534B"/><circle cx="38" cy="18" r="5" fill="#F2B650"/><circle cx="56" cy="18" r="5" fill="#57AB5A"/>
+      <text x="300" y="22" text-anchor="middle" class="d" font-size="12">C:\Projects ⟷ D:\Backup</text>
+      <!-- panels -->
+      <rect x="14" y="36" width="280" height="196" rx="8" fill="#13285A"/>
+      <rect x="306" y="36" width="280" height="196" rx="8" fill="#13285A"/>
+      <!-- selection highlights -->
+      <g class="sel" fill="#F2B650" opacity=".22">
+        <rect x="18" y="66" width="272" height="24" rx="4"/>
+        <rect x="18" y="92" width="272" height="24" rx="4"/>
+        <rect x="18" y="118" width="272" height="24" rx="4"/>
+      </g>
+      <g class="row">
+        <text x="28" y="58" class="d">📁 ..</text>
+        <g class="fly"><text x="28" y="84">📄 report.md</text></g>
+        <g class="fly2"><text x="28" y="110">🖼️ photo.jpg</text></g>
+        <g class="fly3"><text x="28" y="136">📦 release.zip</text></g>
+        <text x="28" y="162">📁 src</text>
+        <text x="28" y="188">📁 docs</text>
+        <text x="28" y="214" class="d">📄 Cargo.toml</text>
+        <text x="320" y="58" class="d">📁 ..</text>
+        <text x="320" y="162">📁 archive</text>
+        <text x="320" y="188" class="d">📄 notes.txt</text>
+        <g class="land"><text x="28" y="84" transform="translate(292,0)">📄 report.md</text></g>
+        <g class="land2"><text x="28" y="110" transform="translate(292,0)">🖼️ photo.jpg</text></g>
+        <g class="land3"><text x="28" y="136" transform="translate(292,0)">📦 release.zip</text></g>
+      </g>
+      <!-- progress -->
+      <rect x="14" y="240" width="572" height="6" rx="3" fill="#13285A"/>
+      <rect class="bar" x="14" y="240" width="0" height="6" rx="3" fill="#F2B650"/>
+      <!-- F-key bar -->
+      <g transform="translate(14,254)" font-size="11" font-weight="600">
+        <rect width="88" height="20" rx="4" fill="#1C3672"/><text x="44" y="14" text-anchor="middle" class="t">F3 View</text>
+        <rect x="96" width="88" height="20" rx="4" fill="#1C3672"/><text x="140" y="14" text-anchor="middle" class="t">F4 Edit</text>
+        <rect class="key" x="192" width="88" height="20" rx="4" fill="#1C3672"/><text x="236" y="14" text-anchor="middle" class="t">F5 Copy</text>
+        <rect x="288" width="88" height="20" rx="4" fill="#1C3672"/><text x="332" y="14" text-anchor="middle" class="t">F6 Move</text>
+        <rect x="384" width="88" height="20" rx="4" fill="#1C3672"/><text x="428" y="14" text-anchor="middle" class="t">F7 Folder</text>
+        <rect x="480" width="92" height="20" rx="4" fill="#1C3672"/><text x="526" y="14" text-anchor="middle" class="t">F8 Delete</text>
+      </g>
+    </g>
+  </g>
+</svg>

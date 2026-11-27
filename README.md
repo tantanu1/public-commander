@@ -2,26 +2,60 @@
 
 <h1 align="center">Commander</h1>
 
+<p align="center"><b>The two-panel file manager you already know how to use. Now free, open, and on every OS.</b></p>
+
 <p align="center">
-A free, fast, modern two-panel file manager with Total Commander keys.<br>
-Written in Rust. Runs natively on Windows, Linux and macOS.
+<a href="https://github.com/tantanu1/public-commander/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/tantanu1/public-commander?style=for-the-badge&color=2563C8"></a>
+<a href="https://github.com/tantanu1/public-commander/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/tantanu1/public-commander/total?style=for-the-badge&color=F2B650"></a>
+<img alt="Windows | Linux | macOS" src="https://img.shields.io/badge/Windows%20%7C%20Linux%20%7C%20macOS-native-57AB5A?style=for-the-badge">
+<img alt="MIT" src="https://img.shields.io/badge/license-MIT-8FA6D6?style=for-the-badge">
 </p>
 
 <p align="center">
-<a href="https://github.com/tantanu1/public-commander/releases/latest"><b>Download the latest release</b></a>
+<a href="https://github.com/tantanu1/public-commander/releases/latest"><b>⬇ Download</b></a>
+&nbsp;·&nbsp; <a href="#why-switch-from-total-commander">Why switch</a>
 &nbsp;·&nbsp; <a href="#features">Features</a>
 &nbsp;·&nbsp; <a href="#keyboard">Keyboard</a>
 &nbsp;·&nbsp; <a href="#plugins">Plugins</a>
 &nbsp;·&nbsp; <a href="docs/PLUGIN-DEV.md">Write a plugin</a>
 </p>
 
-![Commander: two panels with a selection](docs/screens/main.png)
+<p align="center"><img src="docs/hero.svg" alt="Animated: three files selected and copied from the left panel to the right with F5" width="100%"></p>
 
-If you have used Total Commander, you already know how to use Commander: same two panels, same
-F-keys, same `cm_` command names, same muscle memory. It starts in a blink, never blocks on a slow
-drive and opens multi-gigabyte files instantly.
+**Same two panels. Same F-keys. Same `cm_` commands. Zero nag screens.**
+Open Commander and your fingers already know what to do: Tab, Ins, F5, Enter. It starts in a blink,
+never freezes on a slow network drive, opens multi-gigabyte files instantly, and runs natively on
+Windows, Linux and macOS. And when you mis-press F6? **Ctrl+Z.**
 
 ![Navigating, viewing a Markdown file with F3 and browsing into a zip](docs/demos/tour.gif)
+
+## Why switch from Total Commander?
+
+Total Commander is a legend. Commander keeps everything that made it great and fixes what decades
+of history left behind.
+
+| | Total Commander | **Commander** |
+|---|:---:|:---:|
+| Price | Shareware (license per user) | **Free forever, MIT** |
+| Nag screen | Until you pay | **Never** |
+| Windows | ✅ | ✅ x64 + ARM64 |
+| Linux | ❌ | ✅ native |
+| macOS | ❌ | ✅ native, Apple Silicon + Intel |
+| TC keys and `cm_` commands | ✅ | ✅ same muscle memory |
+| Undo last file operation (Ctrl+Z) | ❌ | ✅ |
+| Amazon S3 / R2 / MinIO as a panel | ❌ | ✅ |
+| Markdown rendered in Lister | ❌ | ✅ |
+| Plugin API | Windows DLLs | **One C ABI for every OS, any language** |
+| Install plugins | Unzip + restart | **Drag a zip onto a panel. No restart.** |
+| Source code of plugins | Varies | **All official plugins are open source** |
+| Memory-safe core | C / Pascal | **Rust** |
+
+> Coming from TC? Your `.BAR` button bars import directly, the Options dialog is laid out the way
+> you remember, and every hotkey can be rebound (Ctrl+Shift+K). **196 of the 214** Total Commander
+> features we track already work, and every release adds more.
+
+**Try it in 30 seconds:** grab the [latest release](https://github.com/tantanu1/public-commander/releases/latest),
+run it, press F5. That's the whole tutorial.
 
 ## Download
 
@@ -245,7 +279,9 @@ Check what loaded in **Configuration > Options > Plugins**.
 | [docs/PLUGIN-DEV.md](docs/PLUGIN-DEV.md) | Plugin developer guide: ABI, manifest, building, testing, packaging |
 | [sdk/](sdk) | C header and example plugin |
 
-## How releases are built
+<details>
+<summary><b>How releases are built</b> (maintainers)</summary>
+
 
 This repository is the public home of Commander and its release pipeline; the application source
 is built from a private repository. The workflow in `.github/workflows/release.yml` checks out a
@@ -268,6 +304,13 @@ repository, **Contents: Read-only** and an expiry, then run
 masked in logs and not passed to workflows from forks. When the token expires, runs fail with a
 clear error: repeat these steps.
 
+</details>
+
 ## License
 
 MIT.
+
+---
+
+<p align="center"><b>Like it? ⭐ Star the repo</b> so other Total Commander users can find it.<br>
+Found a bug or missing a TC feature? <a href="https://github.com/tantanu1/public-commander/issues">Open an issue</a>.</p>
