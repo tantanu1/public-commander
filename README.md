@@ -1,58 +1,120 @@
-<p align="center"><img src="docs/logo.svg" width="96" alt="Commander logo"></p>
-
-<h1 align="center">Commander</h1>
-
-<p align="center"><b>The two-panel file manager you already know how to use. Now free, open, and on every OS.</b></p>
+<p align="center"><img src="docs/hero.svg" width="100%" alt="Commander: everything you love about Total Commander, rebuilt for today"></p>
 
 <p align="center">
 <a href="https://github.com/tantanu1/public-commander/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/tantanu1/public-commander?style=for-the-badge&color=2563C8"></a>
 <a href="https://github.com/tantanu1/public-commander/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/tantanu1/public-commander/total?style=for-the-badge&color=F2B650"></a>
 <img alt="Windows | Linux | macOS" src="https://img.shields.io/badge/Windows%20%7C%20Linux%20%7C%20macOS-native-57AB5A?style=for-the-badge">
+<img alt="Written in Rust" src="https://img.shields.io/badge/written%20in-Rust-CE422B?style=for-the-badge&logo=rust">
 <img alt="MIT" src="https://img.shields.io/badge/license-MIT-8FA6D6?style=for-the-badge">
 </p>
 
-<p align="center">
-<a href="https://github.com/tantanu1/public-commander/releases/latest"><b>⬇ Download</b></a>
+<h3 align="center">
+<a href="https://github.com/tantanu1/public-commander/releases/latest">⬇ Download free</a>
 &nbsp;·&nbsp; <a href="#why-switch-from-total-commander">Why switch</a>
-&nbsp;·&nbsp; <a href="#features">Features</a>
-&nbsp;·&nbsp; <a href="#keyboard">Keyboard</a>
 &nbsp;·&nbsp; <a href="#plugins">Plugins</a>
+&nbsp;·&nbsp; <a href="#features">Features</a>
 &nbsp;·&nbsp; <a href="docs/PLUGIN-DEV.md">Write a plugin</a>
-</p>
+</h3>
 
-<p align="center"><img src="docs/hero.svg" alt="Animated: three files selected and copied from the left panel to the right with F5" width="100%"></p>
+**Same two panels. Same F-keys. Same `cm_` commands. Your fingers already know it.**
+Commander is a modern two-panel file manager written in Rust. It opens in **31 ms**, runs natively on
+**Windows, Linux and macOS**, and browses **S3, SFTP, FTP, SMB and VMware VMs** like local folders.
+It is free and has no nag screen. And when you hit F6 by mistake? **Ctrl+Z.**
 
-**Same two panels. Same F-keys. Same `cm_` commands. Zero nag screens.**
-Open Commander and your fingers already know what to do: Tab, Ins, F5, Enter. It starts in a blink,
-never freezes on a slow network drive, opens multi-gigabyte files instantly, and runs natively on
-Windows, Linux and macOS. And when you mis-press F6? **Ctrl+Z.**
-
-![Navigating, viewing a Markdown file with F3 and browsing into a zip](docs/demos/tour.gif)
+<p align="center"><img src="docs/demos/tour-v0.0.33.gif" width="100%" alt="Real recording of Commander v0.0.33: quick search, rendered Markdown in F3, thumbnails, quick view, multi-select and F5 copy, plugin drives and the plugin manager"></p>
+<p align="center"><sub>Real recording of Commander v0.0.33: quick search · Markdown in F3 · thumbnails · Ctrl+Q quick view · Ins + F5 · plugin drives · plugin manager</sub></p>
 
 ## Why switch from Total Commander?
 
-Total Commander is a legend. Commander keeps everything that made it great and fixes what decades
-of history left behind.
+Total Commander is a legend. Commander keeps the keys and the workflow you know, and adds what
+Total Commander can't offer.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🦀 Written in Rust
+Memory-safe from the ground up. No buffer overflows, no mystery crashes. If something ever goes
+wrong you get a `crash.log`, not a dead window.
+
+</td>
+<td width="50%" valign="top">
+
+### ⚡ Faster
+**31 ms** from launch to window, against **459 ms** for TC 11.51: about **15× faster** on the
+same machine. Listings load in the background, so a 100,000-file folder never freezes the UI.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 🐧 Windows, Linux and macOS
+Real native builds for all three (x64 and ARM64 on Windows and macOS), with `.msi`, `.deb`, `.rpm`,
+`.AppImage` and `.dmg` installers. Use the same file manager on every machine you own.
+
+</td>
+<td valign="top">
+
+### ✨ Modern
+GPU-rendered UI, dark and light themes, thumbnails, Markdown rendered in Lister, Ctrl+Z undo,
+WinDirStat-style Clean Disk, "which process holds this file", and drag and drop with Explorer and Finder.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 🧩 Plugins in any language
+One small, versioned C ABI that works the same on every OS. Write plugins in **C, C++, Rust, Zig,
+Go**, or even **Python** over stdio ([example](sdk/examples)). No 32/64-bit DLL zoo and no
+per-OS rewrites. [Plugin guide →](docs/PLUGIN-DEV.md)
+
+</td>
+<td valign="top">
+
+### 🛒 Plugin hub
+**Options › Plugins › Browse registry** lists the signed plugin index; install with one click.
+Or **drag a plugin zip onto a panel**. Either way, there's no restart.
+All official plugins are open source: [commander-plugins](https://github.com/tantanu1/commander-plugins).
+
+</td>
+</tr>
+</table>
+
+### ☁️ Already supported: S3, SFTP / FTP, SMB, VMware Workstation
+
+<p align="center"><img src="docs/demos/plugins.gif" width="100%" alt="Real recording: s3 and vm drives in the drive list, then Options > Plugins listing FTP, FTPS, S3, 7-Zip, SFTP, SMB and VMware VMs"></p>
+
+| Plugin | What you get |
+|---|---|
+| **VMware Workstation** | Your VMs show up as a `vm` drive. Browse into a VM's disks and copy files out with F5. |
+| **Amazon S3** (and R2, MinIO, SeaweedFS) | The `s3` drive lists your AWS profiles, then your buckets. SSO login built in. |
+| **SFTP** | Ctrl+F, keys or ssh-agent, strict `known_hosts` checking. |
+| **FTP / FTPS** | Bookmarks, resume, download lists, explicit TLS. |
+| **SMB** | Network shares as panels. |
+| **7-Zip** | RAR, ISO, CAB, WIM, encrypted and multi-volume archives. |
+
+<p align="center"><img src="docs/speed.svg" width="100%" alt="Cold start to window: Commander 31 ms, Total Commander 459 ms"></p>
+
+### Side by side
 
 | | Total Commander | **Commander** |
 |---|:---:|:---:|
-| Price | Shareware (license per user) | **Free forever, MIT** |
+| Price | Shareware, paid license | **Free forever (MIT)** |
 | Nag screen | Until you pay | **Never** |
-| Windows | ✅ | ✅ x64 + ARM64 |
-| Linux | ❌ | ✅ native |
-| macOS | ❌ | ✅ native, Apple Silicon + Intel |
-| TC keys and `cm_` commands | ✅ | ✅ same muscle memory |
-| Undo last file operation (Ctrl+Z) | ❌ | ✅ |
-| Amazon S3 / R2 / MinIO as a panel | ❌ | ✅ |
-| Markdown rendered in Lister | ❌ | ✅ |
-| Plugin API | Windows DLLs | **One C ABI for every OS, any language** |
-| Install plugins | Unzip + restart | **Drag a zip onto a panel. No restart.** |
-| Source code of plugins | Varies | **All official plugins are open source** |
-| Memory-safe core | C / Pascal | **Rust** |
+| Language | Pascal / C | **Rust** |
+| Start to window | 459 ms | **31 ms** |
+| Windows / Linux / macOS | Windows only | **All three, native** |
+| Plugin API | Windows DLLs, per bitness | **One C ABI, any language, every OS** |
+| Plugin install | Unzip + restart | **Plugin hub or drag a zip. No restart.** |
+| S3 / VMware VMs as folders | ❌ | ✅ |
+| Undo last file operation | ❌ | ✅ Ctrl+Z |
+| TC keys, `cm_` commands, `.BAR` import | ✅ | ✅ |
 
 > Coming from TC? Your `.BAR` button bars import directly, the Options dialog is laid out the way
 > you remember, and every hotkey can be rebound (Ctrl+Shift+K). **196 of the 214** Total Commander
-> features we track already work, and every release adds more.
+> features we track already work.
 
 **Try it in 30 seconds:** grab the [latest release](https://github.com/tantanu1/public-commander/releases/latest),
 run it, press F5. That's the whole tutorial.
